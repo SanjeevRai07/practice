@@ -1,0 +1,4 @@
+1   .DS_Store
+2   node_modules
+3   .idea
+4    package-lock.json
