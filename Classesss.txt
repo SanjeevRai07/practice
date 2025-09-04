@@ -1,0 +1,87 @@
+#include <iostream>
+#include <vector>
+#include <string>
+#include <limits>
+#include <iomanip>
+
+// OrderBookEntry class representing a single order entry
+class OrderBookEntry {
+public:
+    std::string timestamp;
+    std::string product;
+    std::string orderType;
+    double price;
+    double amount;
+
+    // Constructor
+    OrderBookEntry(std::string ts, std::string prod, std::string type, double pr, double amt)
+        : timestamp(ts), product(prod), orderType(type), price(pr), amount(amt) {}
+};
+
+// Function to compute average price
+double computeAveragePrice(const std::vector<OrderBookEntry>& orders) {
+    if (orders.empty()) return 0.0;
+
+    double sum = 0.0;
+    for (const auto& entry : orders) {
+        sum += entry.price;
+    }
+    return sum / orders.size();
+}
+
+// Function to compute lowest price
+double computeLowPrice(const std::vector<OrderBookEntry>& orders) {
+    double low = std::numeric_limits<double>::max();
+    for (const auto& entry : orders) {
+        if (entry.price < low) {
+            low = entry.price;
+        }
+    }
+    return low;
+}
+
+// Function to compute highest price
+double computeHighPrice(const std::vector<OrderBookEntry>& orders) {
+    double high = std::numeric_limits<double>::lowest();
+    for (const auto& entry : orders) {
+        if (entry.price > high) {
+            high = entry.price;
+        }
+    }
+    return high;
+}
+
+// Function to compute price spread (high - low)
+double computePriceSpread(const std::vector<OrderBookEntry>& orders) {
+    return computeHighPrice(orders) - computeLowPrice(orders);
+}
+
+int main() {
+    // Create a vector of OrderBookEntry objects
+    std::vector<OrderBookEntry> orderEntries = {
+        OrderBookEntry("2020/03/17 17:01:24.884492", "ETH/BTC", "bid", 0.02186299, 0.1),
+        OrderBookEntry("2020/03/17 17:02:24.884492", "ETH/BTC", "ask", 0.02190000, 0.2),
+        OrderBookEntry("2020/03/17 17:03:24.884492", "ETH/BTC", "bid", 0.02180000, 0.15),
+        OrderBookEntry("2020/03/17 17:04:24.884492", "ETH/BTC", "ask", 0.02195000, 0.3),
+        OrderBookEntry("2020/03/17 17:05:24.884492", "ETH/BTC", "bid", 0.02187000, 0.12)
+    };
+
+    // Print all order entries
+    std::cout << "Order Book Entries:\n";
+    for (const auto& entry : orderEntries) {
+        std::cout << entry.timestamp << " | "
+                  << entry.product << " | "
+                  << entry.orderType << " | "
+                  << std::fixed << std::setprecision(8) << entry.price << " | "
+                  << entry.amount << "\n";
+    }
+
+    // Compute and display statistics
+    std::cout << "\nStatistics on Price:\n";
+    std::cout << "Average Price: " << computeAveragePrice(orderEntries) << "\n";
+    std::cout << "Lowest Price: " << computeLowPrice(orderEntries) << "\n";
+    std::cout << "Highest Price: " << computeHighPrice(orderEntries) << "\n";
+    std::cout << "Price Spread: " << computePriceSpread(orderEntries) << "\n";
+
+    return 0;
+}
